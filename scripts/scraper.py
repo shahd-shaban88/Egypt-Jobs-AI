@@ -1,129 +1,111 @@
-"""
-Egypt Jobs AI - Automated Job Scraper
-======================================
-This script searches for AI/ML job opportunities in Egypt
-and updates the data/jobs.json file automatically.
-
-It uses a mock dataset by default, but can be extended to
-use live LinkedIn data via RapidAPI's LinkedIn Job Search API.
-
-Dependencies:
-    pip install requests beautifulsoup4
-"""
-
 import json
 import os
 import datetime
-import requests
 import uuid
+import requests
+from bs4 import BeautifulSoup
 
-# --- CONFIGURATION ---
+# مسار ملف البيانات
 JOBS_FILE = os.path.join(os.path.dirname(__file__), '..', 'data', 'jobs.json')
-AI_KEYWORDS = ['machine learning', 'deep learning', 'nlp', 'computer vision',
-               'data science', 'artificial intelligence', 'ai engineer',
-               'ml engineer', 'llm', 'generative ai', 'neural network']
-LOCATION_KEYWORDS = ['egypt', 'cairo', 'alexandria', 'remote']
-
-# Optional: Set your RapidAPI Key as a GitHub Secret named RAPIDAPI_KEY
-RAPIDAPI_KEY = os.environ.get('RAPIDAPI_KEY', None)
-
 
 def load_existing_jobs():
-    """Load existing jobs from the JSON file."""
     if os.path.exists(JOBS_FILE):
         with open(JOBS_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
+            try:
+                return json.load(f)
+            except json.JSONDecodeError:
+                return []
     return []
 
-
 def save_jobs(jobs):
-    """Save jobs list to the JSON file."""
     os.makedirs(os.path.dirname(JOBS_FILE), exist_ok=True)
     with open(JOBS_FILE, 'w', encoding='utf-8') as f:
         json.dump(jobs, f, ensure_ascii=False, indent=2)
-    print(f"[✓] Saved {len(jobs)} jobs to {JOBS_FILE}")
 
-
-def fetch_jobs_from_rapidapi():
-    """
-    Fetch AI/ML jobs from Egypt via RapidAPI LinkedIn Job Search API.
-    Requires RAPIDAPI_KEY environment variable to be set.
-    Docs: https://rapidapi.com/jaypat87/api/linkedin-jobs-search/
-    """
-    if not RAPIDAPI_KEY:
-        print("[!] RAPIDAPI_KEY not set. Skipping live fetch.")
-        return []
-
-    url = "https://linkedin-jobs-search.p.rapidapi.com/"
+def fetch_real_linkedin_jobs():
+    print("Fetching REAL jobs from LinkedIn...")
+    
+    # رابط البحث عن وظائف الذكاء الاصطناعي في مصر (الصفحة العامة المجانية)
+    url = "https://www.linkedin.com/jobs/search?keywords=Artificial%20Intelligence&location=Egypt&f_TPR=r604800"
+    
     headers = {
-        "content-type": "application/json",
-        "X-RapidAPI-Key": RAPIDAPI_KEY,
-        "X-RapidAPI-Host": "linkedin-jobs-search.p.rapidapi.com"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
-    payload = {
-        "search_terms": "Artificial Intelligence Engineer",
-        "location": "Egypt",
-        "page": "1"
-    }
-
+    
     try:
-        response = requests.post(url, json=payload, headers=headers, timeout=20)
+        response = requests.get(url, headers=headers, timeout=15)
         response.raise_for_status()
-        raw_jobs = response.json()
-        parsed = []
-        for j in raw_jobs:
-            title = j.get('job_title', '')
-            loc = j.get('job_location', '').lower()
-            # Filter: must be in Egypt and AI-related
-            if not any(k in loc for k in LOCATION_KEYWORDS):
+        
+        soup = BeautifulSoup(response.text, 'html.parser')
+        job_cards = soup.find_all('div', class_='base-card')
+        
+        parsed_jobs = []
+        for card in job_cards:
+            try:
+                title_elem = card.find('h3', class_='base-search-card__title')
+                title = title_elem.text.strip() if title_elem else "AI Engineer"
+                
+                company_elem = card.find('h4', class_='base-search-card__subtitle')
+                company = company_elem.text.strip() if company_elem else "Unknown Company"
+                
+                location_elem = card.find('span', class_='job-search-card__location')
+                location = location_elem.text.strip() if location_elem else "Egypt"
+                
+                link_elem = card.find('a', class_='base-card__full-link')
+                link = link_elem['href'].split('?')[0] if link_elem else "https://www.linkedin.com"
+                
+                # تحديد نوع الوظيفة
+                job_type = "Full-time"
+                if "intern" in title.lower() or "تدريب" in title:
+                    job_type = "Internship"
+                elif "remote" in location.lower() or "عن بعد" in location:
+                    location = "Remote (Egypt)"
+                
+                parsed_jobs.append({
+                    "id": str(uuid.uuid4()),
+                    "title": title,
+                    "company": company,
+                    "location": location,
+                    "type": job_type,
+                    "category": "AI & Data",
+                    "date_posted": datetime.date.today().isoformat(),
+                    "link": link,
+                    "description": f"Real opportunity recently posted by {company} for a {title} position in {location}. Click Apply to view full details on LinkedIn."
+                })
+            except Exception as e:
                 continue
-            if not any(k in title.lower() for k in AI_KEYWORDS):
-                continue
-            parsed.append({
-                "id": str(uuid.uuid4()),
-                "title": title,
-                "company": j.get('company_name', 'Unknown'),
-                "location": j.get('job_location', 'Egypt'),
-                "type": "Full-time",
-                "category": "AI / ML",
-                "date_posted": datetime.date.today().isoformat(),
-                "link": j.get('linkedin_job_url_cleaned', '#'),
-                "description": j.get('job_description', '')[:300] + '...'
-            })
-        print(f"[✓] Fetched {len(parsed)} live jobs from RapidAPI.")
-        return parsed
+                
+        print(f"Successfully scraped {len(parsed_jobs)} real jobs from LinkedIn.")
+        return parsed_jobs
+    
     except Exception as e:
-        print(f"[!] Error fetching from RapidAPI: {e}")
+        print(f"Failed to scrape LinkedIn: {e}")
         return []
-
 
 def merge_jobs(existing, new_jobs):
-    """Merge new jobs with existing ones, avoiding duplicates by title+company."""
+    # منع التكرار بناءً على اسم الوظيفة والشركة
     existing_keys = {(j['title'].lower(), j['company'].lower()) for j in existing}
-    added = 0
+    added_count = 0
+    
     for job in new_jobs:
         key = (job['title'].lower(), job['company'].lower())
         if key not in existing_keys:
-            existing.append(job)
+            existing.insert(0, job) # إضافة الوظيفة الجديدة في بداية القائمة
             existing_keys.add(key)
-            added += 1
-    print(f"[✓] Added {added} new unique jobs.")
+            added_count += 1
+            
+    print(f"Added {added_count} brand new unique jobs to the platform.")
     return existing
 
-
 if __name__ == '__main__':
-    print("=" * 50)
-    print("   Egypt Jobs AI - Scraper Running")
-    print(f"   Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}")
-    print("=" * 50)
-
-    existing_jobs = load_existing_jobs()
-    print(f"[i] Loaded {len(existing_jobs)} existing jobs.")
-
-    new_jobs = fetch_jobs_from_rapidapi()
-
-    merged = merge_jobs(existing_jobs, new_jobs)
-    save_jobs(merged)
-
-    print("=" * 50)
-    print("[✓] Scraper finished successfully.")
+    print("Starting Egypt Jobs AI Real Scraper...")
+    existing = load_existing_jobs()
+    real_jobs = fetch_real_linkedin_jobs()
+    
+    if real_jobs:
+        merged = merge_jobs(existing, real_jobs)
+        # الاحتفاظ بآخر 100 وظيفة فقط حتى لا يصبح الملف ضخماً جداً
+        save_jobs(merged[:100])
+        print("Done!")
+    else:
+        print("No new jobs found today.")
