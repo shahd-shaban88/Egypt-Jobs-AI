@@ -1,35 +1,68 @@
 [
   {
-    "id": 1,
-    "title": "Machine Learning Engineer",
-    "company": "TechVision AI",
-    "location": "Cairo, Egypt (Hybrid)",
-    "type": "Full-time",
+    "id": "1",
+    "title": "AI / Machine Learning Intern",
+    "company": "Valeo Egypt",
+    "location": "Cairo, Egypt (On-site)",
+    "type": "Internship",
     "category": "Machine Learning",
-    "date_posted": "2026-05-13",
-    "link": "https://linkedin.com",
-    "description": "We are looking for an experienced ML Engineer to build computer vision models..."
+    "date_posted": "2026-05-14",
+    "link": "https://www.linkedin.com/jobs/search/?keywords=AI%20Intern%20Valeo&location=Egypt",
+    "description": "Valeo is a global automotive supplier and one of the largest tech employers in Egypt. Their Cairo R&D center regularly offers AI & Computer Vision internships for students and fresh graduates. Click Apply to find current openings."
   },
   {
-    "id": 2,
-    "title": "Data Scientist Intern",
-    "company": "DataHub Egypt",
-    "location": "Remote",
+    "id": "2",
+    "title": "Data Science Intern",
+    "company": "Vodafone Egypt (Vodanation Program)",
+    "location": "Cairo, Egypt (Hybrid)",
     "type": "Internship",
     "category": "Data Science",
     "date_posted": "2026-05-14",
-    "link": "https://linkedin.com",
-    "description": "Join our summer internship program to work on predictive analytics..."
+    "link": "https://www.linkedin.com/jobs/search/?keywords=Data%20Science%20Intern%20Vodafone&location=Egypt",
+    "description": "Vodafone Egypt's Vodanation internship program is one of Egypt's most prestigious for tech students. It includes hands-on experience in Data Science, AI, and Analytics within a world-class telecom environment."
   },
   {
-    "id": 3,
-    "title": "NLP Researcher",
-    "company": "ArabicAI",
-    "location": "Alexandria, Egypt (On-site)",
-    "type": "Full-time",
+    "id": "3",
+    "title": "Applied Scientist / AI Research Intern",
+    "company": "Amazon (AWS Egypt)",
+    "location": "Cairo, Egypt / Remote",
+    "type": "Internship",
+    "category": "AI Research",
+    "date_posted": "2026-05-14",
+    "link": "https://www.linkedin.com/jobs/search/?keywords=Applied%20Scientist%20Intern%20Amazon&location=Egypt",
+    "description": "Amazon Web Services (AWS) regularly recruits Applied Scientist Interns from Egypt for their global and regional AI projects. Strong Python and ML frameworks experience required. Click Apply to see current open roles."
+  },
+  {
+    "id": "4",
+    "title": "AI & Data Analytics Intern",
+    "company": "PwC Middle East (Cairo Office)",
+    "location": "Cairo, Egypt (Hybrid)",
+    "type": "Internship",
+    "category": "Data Analytics",
+    "date_posted": "2026-05-14",
+    "link": "https://www.linkedin.com/jobs/search/?keywords=AI%20Data%20Intern%20PwC&location=Egypt",
+    "description": "PwC's Cairo office runs AI and Data Analytics internship programs for Business and CS students. You'll work on real client projects using ML models, dashboards, and automation tools. Apply via LinkedIn."
+  },
+  {
+    "id": "5",
+    "title": "NLP / Arabic AI Research Intern",
+    "company": "Microsoft Egypt (AI for Good)",
+    "location": "Cairo, Egypt / Remote",
+    "type": "Internship",
     "category": "NLP",
-    "date_posted": "2026-05-12",
-    "link": "https://linkedin.com",
-    "description": "Seeking an NLP researcher specializing in Arabic language models..."
+    "date_posted": "2026-05-14",
+    "link": "https://www.linkedin.com/jobs/search/?keywords=NLP%20Intern%20Microsoft&location=Egypt",
+    "description": "Microsoft's AI for Good initiative in the Middle East recruits Arabic NLP and AI Research Interns. Ideal for those working on Arabic language models (LLMs), text classification, or speech recognition research."
+  },
+  {
+    "id": "6",
+    "title": "Computer Vision Intern",
+    "company": "ITWorx Egypt",
+    "location": "Cairo, Egypt (On-site)",
+    "type": "Internship",
+    "category": "Computer Vision",
+    "date_posted": "2026-05-14",
+    "link": "https://www.linkedin.com/jobs/search/?keywords=Computer%20Vision%20Intern%20ITWorx&location=Egypt",
+    "description": "ITWorx is one of Egypt's leading software companies with a strong AI division. They regularly hire Computer Vision interns to work on real-world image processing and object detection projects using PyTorch and OpenCV."
   }
 ]
