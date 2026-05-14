@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "title": "Machine Learning Engineer",
+    "company": "TechVision AI",
+    "location": "Cairo, Egypt (Hybrid)",
+    "type": "Full-time",
+    "category": "Machine Learning",
+    "date_posted": "2026-05-13",
+    "link": "https://linkedin.com",
+    "description": "We are looking for an experienced ML Engineer to build computer vision models..."
+  },
+  {
+    "id": 2,
+    "title": "Data Scientist Intern",
+    "company": "DataHub Egypt",
+    "location": "Remote",
+    "type": "Internship",
+    "category": "Data Science",
+    "date_posted": "2026-05-14",
+    "link": "https://linkedin.com",
+    "description": "Join our summer internship program to work on predictive analytics..."
+  },
+  {
+    "id": 3,
+    "title": "NLP Researcher",
+    "company": "ArabicAI",
+    "location": "Alexandria, Egypt (On-site)",
+    "type": "Full-time",
+    "category": "NLP",
+    "date_posted": "2026-05-12",
+    "link": "https://linkedin.com",
+    "description": "Seeking an NLP researcher specializing in Arabic language models..."
+  }
+]
